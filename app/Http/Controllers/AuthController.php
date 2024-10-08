@@ -45,7 +45,7 @@ class AuthController extends Controller
             'password' => ['required', 'min:5'],
         ]);
 
-        $user = User::createUser($validated);
+        $user = User::create($validated);
 
         Auth::login($user);
         return redirect('/');
