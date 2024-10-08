@@ -13,6 +13,7 @@ class BlogSeeder extends Seeder
      */
     public function run(): void
     {
-        Blog::factory(5)->create();
+        Blog::factory(2)->create();
+        Blog::create(['title' => "this is a new blog", "content" => "some contents here", 'image' => 'a.png', 'user_id' => 1]);
     }
 }

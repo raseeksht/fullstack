@@ -23,7 +23,7 @@ class BlogController extends Controller
 
     public function show($id)
     {
-        $blog = $this->blogRepository->findById($id);
+        $blog = $this->blogRepository->find($id);
         // dd($blog);
         return view("blog/show", ["blog" => $blog]);
     }
@@ -59,6 +59,25 @@ class BlogController extends Controller
         $blog = $this->blogRepository->create($validated);
         // dd($blog);
         return redirect("/blogs/$blog->id")->with('newblog', "new blog created");
+    }
+
+    public function update($id)
+    {
+        $validated = request()->validate([
+
+            'title' => ['required', 'min:10'],
+            'content' => ['required', 'min:40'],
+            // 'image' => 'nullable|image|mimes:jpg,png,jpeg,webp,gif'
+        ]);
+        $blog = $this->blogRepository->update($id, $validated);
+        // dd($blog);
+        return redirect("/blogs/$id");
+    }
+
+    public function destroy($id)
+    {
+        $this->blogRepository->delete($id);
+        return redirect("/blogs")->with('message', "Blog Deleted Successfuly!");
     }
 
 }

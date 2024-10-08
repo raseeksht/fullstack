@@ -1,5 +1,9 @@
 <x-layout navbar>
-
+    @if (session('message'))
+        <x-alert>
+            {{session('message')}}
+        </x-alert>
+    @endif
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
             <div>
