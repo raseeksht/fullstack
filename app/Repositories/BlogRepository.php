@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 use App\Models\Blog;
+use App\Models\Comment;
 use App\Repositories\Interfaces\BlogRepositoryInterface;
 
 
@@ -36,5 +37,7 @@ class BlogRepository implements BlogRepositoryInterface
         Blog::destroy($id);
         return true;
     }
+
+
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -19,12 +20,9 @@ class UserController extends Controller
         return view("user.show", ["user" => $user]);
     }
 
-    public function update($id)
+    public function update(UserRequest $request, $id)
     {
-        $validated = request()->validate([
-            'name' => ['required', 'min:5'],
-            'email' => ['required', 'email'],
-        ]);
+
         $user = User::findOrFail($id);
 
         $user->name = request()->name;

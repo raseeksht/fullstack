@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,13 +38,9 @@ class AuthController extends Controller
         return redirect('/');
     }
 
-    public function create()
+    public function create(UserRequest $request)
     {
-        $validated = request()->validate([
-            'name' => ['required', 'min:5'],
-            'email' => ['required', 'email'],
-            'password' => ['required', 'min:5'],
-        ]);
+        $validated = $request->validated();
 
         $user = User::create($validated);
 
