@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BlogRequest;
 use App\Repositories\BlogRepository;
+use App\Repositories\CommentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BlogController extends Controller
 {
     private $blogRepository;
-    public function __construct(BlogRepository $blogRepository)
+    private $commentRepository;
+    public function __construct(BlogRepository $blogRepository, CommentRepository $commentRepository)
     {
         $this->blogRepository = $blogRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     public function index()
@@ -24,8 +28,10 @@ class BlogController extends Controller
     public function show($id)
     {
         $blog = $this->blogRepository->find($id);
+        $comments = $this->commentRepository->getCommentsOnBlog($id); //here $id is blogid
+        // dd($comments);
         // dd($blog);
-        return view("blog/show", ["blog" => $blog]);
+        return view("blog/show", ["blog" => $blog, "comments" => $comments]);
     }
 
     public function create()
@@ -33,18 +39,12 @@ class BlogController extends Controller
         return view('blog/create');
     }
 
-    public function store()
+    public function store(BlogRequest $request)
     {
         if (Auth::guest())
         {
             abort(403);
         }
-        $validated = request()->validate([
-
-            'title' => ['required', 'min:10'],
-            'content' => ['required', 'min:40'],
-            'image' => 'nullable|image|mimes:jpg,png,jpeg,webp,gif'
-        ]);
 
         if (request()->has('image'))
         {
@@ -53,6 +53,8 @@ class BlogController extends Controller
             $newName = time() . '.' . $extenstion;
             $image->move(public_path('storage/images'), $newName);
         }
+
+        $validated = $request->validated();
         $validated['user_id'] = Auth::user()->id;
         $validated['image'] = $newName;
 
@@ -61,15 +63,9 @@ class BlogController extends Controller
         return redirect("/blogs/$blog->id")->with('newblog', "new blog created");
     }
 
-    public function update($id)
+    public function update(BlogRequest $request, $id)
     {
-        $validated = request()->validate([
-
-            'title' => ['required', 'min:10'],
-            'content' => ['required', 'min:40'],
-            // 'image' => 'nullable|image|mimes:jpg,png,jpeg,webp,gif'
-        ]);
-        $blog = $this->blogRepository->update($id, $validated);
+        $blog = $this->blogRepository->update($id, $request->validated());
         // dd($blog);
         return redirect("/blogs/$id");
     }
@@ -79,5 +75,7 @@ class BlogController extends Controller
         $this->blogRepository->delete($id);
         return redirect("/blogs")->with('message', "Blog Deleted Successfuly!");
     }
+
+
 
 }

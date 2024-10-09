@@ -55,5 +55,15 @@
             </div>
 
         </x-modal>
+
+        <!-- open update modal if any error has occured while updating to show err message -->
+        @if ($errors->any())
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.querySelector("#editUserBtn").click()
+
+                });
+            </script>
+        @endif
     </div>
 </x-layout>

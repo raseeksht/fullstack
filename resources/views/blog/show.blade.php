@@ -40,7 +40,8 @@
                 </x-modal>
 
                 <!--prev update garda keu validation err xa vane popup kholne -->
-                @if ($errors->any())
+                @if ($errors->has('title') || $errors->has('content') || $errors->has('image'))
+
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
                             document.querySelector("#editBlogBtn").click()
@@ -71,6 +72,32 @@
                 </div>
             </div>
         </div>
+
+        <h2 class="underline bold">Comments</h2>
+        <div>
+            <form action="/comments" method="post">
+                @csrf
+                <div class="d-flex align-items-center">
+                    <div class="w-50">
+                        <input type="hidden" value="{{$blog->id}}" name="blog_id" type="number" />
+                        <x-form-input name="comment" id="commentContent" name="commentContent"
+                            label="Make a new Comment" placeholder="Your Awesome Comment"></x-form-input>
+
+                    </div>
+                    <div class="mt-3 mx-4">
+
+                        <x-button type="submit">
+                            Add Comment
+                        </x-button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        @foreach ($comments as $comment)
+
+            <x-comment :comment="$comment"></x-comment>
+
+        @endforeach
 
 
     </div>
