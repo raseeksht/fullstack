@@ -58,6 +58,7 @@
 
 
 
+
         <div class="container">
             <div class="row">
 
@@ -81,7 +82,7 @@
                     <div class="w-50">
                         <input type="hidden" value="{{$blog->id}}" name="blog_id" type="number" />
                         <x-form-input name="comment" id="commentContent" name="commentContent"
-                            label="Make a new Comment" placeholder="Your Awesome Comment"></x-form-input>
+                            label="Make a new Comment" placeholder="Your Awesome Comment" required></x-form-input>
 
                     </div>
                     <div class="mt-3 mx-4">
@@ -96,6 +97,8 @@
         @foreach ($comments as $comment)
 
             <x-comment :comment="$comment"></x-comment>
+            <hr />
+
 
         @endforeach
 
@@ -104,8 +107,47 @@
 
 
 
+    <script>
+        const handleReplyClick = (element, commentId, blogId) => {
+            // const csrf = document.querySelector('meta[name=csrf-token]').getAttribute('content')
+            element.parentElement.insertAdjacentHTML("beforeend", `
+            <form action="/comments" method="post">
+                @csrf
+                <input type="hidden" value="${commentId}" name="parent" />
+                <input type="hidden" value="${blogId}" name="blog_id" />
+                <div class="d-flex">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="commentContent" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
+                    </div>
 
+                    <div>
+                        <button class='btn btn-primary' type="submit">Reply</button>
+                    </div>
+                </div>
+            </form>
+            `);
+        }
 
+        const handleEditClick = (element, commentId, blogId) => {
+            const commentContainer = document.getElementById(`comment${commentId}`)
+            commentContainer.innerHTML = `
+            <div>
+            <form action="/comments/${commentId}" method="post">
+                @csrf
+                @method("PATCH")
+                <div class="d-flex">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="commentContent" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="${commentContainer.innerHTML}" required>
+                    </div>
+
+                    <div>
+                        <button class='btn btn-primary' type="submit">Edit</button>
+                    </div>
+                </div>
+            </div>
+            `
+        }
+    </script>
 
 
 </x-layout>

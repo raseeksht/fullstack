@@ -21,10 +21,25 @@ class CommentRequest extends BaseRequest
      */
     public function rules(): array
     {
-        return [
-            'commentContent' => ['required'],
-            'parent' => ['sometimes', 'int'],
-            'blog_id' => ['required', 'int'],
-        ];
+        if ($this->isMethod("post"))
+        {
+            return [
+                'commentContent' => ['required'],
+                'parent' => ['sometimes', 'int'],
+                'blog_id' => ['required', 'int'],
+            ];
+        } elseif ($this->isMethod('delete'))
+        {
+            // dd(request()->all());
+            return [
+                'blog_id' => ['required', 'int'],
+            ];
+        } elseif ($this->isMethod('patch'))
+        {
+            return [
+                'commentContent' => ['required'],
+            ];
+        }
+
     }
 }
