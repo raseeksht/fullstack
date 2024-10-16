@@ -43,6 +43,8 @@ class CommentController extends Controller
         $validated['user_id'] = Auth()->user()->id;
         $validated['blog_id'] = (int) $validated['blog_id'];
 
+        // dd($validated);
+
         $newcomment = $this->commentRepository->addComment($validated);
 
         // dd($newcomment);
@@ -56,7 +58,9 @@ class CommentController extends Controller
      */
     public function show($blogId)
     {
-        dd(request()->all());
+        $comments = $this->commentRepository->getCommentsOnBlog($blogId);
+
+        return $comments;
     }
 
     /**
@@ -71,16 +75,22 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(CommentRequest $request, $id)
     {
-        dd("update");
+        $this->commentRepository->updateComment($id, $request->validated("commentContent"));
+        // dd($request->validated());
+        return redirect("/blogs/" . $request->validated('blog_id'));
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(CommentRequest $request, $id)
     {
-        //
+        $validated = $request->validated();
+        $comment = $this->commentRepository->deleteComment($id);
+        // dd($comment);
+        return redirect("/blogs/" . $validated['blog_id']);
     }
 }
