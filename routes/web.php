@@ -35,7 +35,7 @@ Route::get('/contact', function () {
 
 
 Route::controller(AuthController::class)->group(function () {
-    Route::get('/login', 'login')->name('login');
+    // Route::get('/login', 'login')->name('login');
     Route::post('/login', 'authenticate');
     Route::get('/register', 'register');
     Route::post('/register', 'create');
