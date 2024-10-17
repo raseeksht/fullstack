@@ -25,4 +25,10 @@ class Comment extends Model
     {
         return $this->belongsTo(Comment::class, 'parent');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent');
+    }
+
 }
