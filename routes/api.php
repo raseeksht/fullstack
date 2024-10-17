@@ -17,7 +17,7 @@ Route::get('/test', function (Request $request) {
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'authenticate');
     Route::post('/register', 'create');
-    Route::get("/logout", "logout");
+    Route::get("/logout", "logout")->middleware("auth:sanctum");
 });
 
 Route::resource("blogs", BlogController::class)->middleware("auth:sanctum");

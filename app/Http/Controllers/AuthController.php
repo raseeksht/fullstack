@@ -16,11 +16,12 @@ class AuthController extends ApiController
         return view("/login");
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
+        // Auth::logout();
+        $request->user()->tokens()->delete();
 
-        return redirect("/");
+        return $this->ApiResponse(200, "Logged Out", null);
     }
 
     public function authenticate()
