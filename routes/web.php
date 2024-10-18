@@ -19,37 +19,37 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::get("/", [HomeController::class, "index"]);
+// Route::get("/", [HomeController::class, "index"]);
 
-Route::get('/about', function () {
-    return view('about');
-});
-
-
-Route::get('/contact', function () {
-    return view('contact');
-});
+// Route::get('/about', function () {
+//     return view('about');
+// });
 
 
-// Route::get('/login', [AuthController::class, 'login']);
+// Route::get('/contact', function () {
+//     return view('contact');
+// });
 
 
-Route::controller(AuthController::class)->group(function () {
-    // Route::get('/login', 'login')->name('login');
-    Route::post('/login', 'authenticate');
-    Route::get('/register', 'register');
-    Route::post('/register', 'create');
-    Route::get("/logout", "logout");
-});
+// // Route::get('/login', [AuthController::class, 'login']);
 
 
+// Route::controller(AuthController::class)->group(function () {
+//     // Route::get('/login', 'login')->name('login');
+//     Route::post('/login', 'authenticate');
+//     Route::get('/register', 'register');
+//     Route::post('/register', 'create');
+//     Route::get("/logout", "logout");
+// });
 
 
 
-// resourceful route (auto create all the routes)
-Route::resource("users", UserController::class);
 
-Route::resource("blogs", BlogController::class)->middleware("auth");
-Route::resource("comments", CommentController::class)->middleware("auth");
+
+// // resourceful route (auto create all the routes)
+// Route::resource("users", UserController::class);
+
+// Route::resource("blogs", BlogController::class)->middleware("auth");
+// Route::resource("comments", CommentController::class)->middleware("auth");
 
 

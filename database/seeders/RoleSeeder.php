@@ -15,5 +15,6 @@ class RoleSeeder extends Seeder
     {
         Role::create(['title' => 'admin']);
         Role::create(['title' => 'author']);
+        Role::create(['title' => 'editor']);
     }
 }
