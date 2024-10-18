@@ -11,17 +11,17 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends ApiController
 {
-    public function login()
-    {
-        return view("/login");
-    }
+    // public function login()
+    // {
+    //     return view("/login");
+    // }
 
     public function logout(Request $request)
     {
         // Auth::logout();
         $request->user()->tokens()->delete();
 
-        return $this->ApiResponse(200, "Logged Out", null);
+        return $this->SuccessResponse(null, 200, "Logged Out");
     }
 
     public function authenticate()
@@ -33,10 +33,10 @@ class AuthController extends ApiController
 
         if (!Auth::attempt($validated))
         {
-            return $this->ApiError(401, 'Invalid Email or Password');
+            return $this->ErrorResponse(401, 'Invalid Email or Password');
         }
-        $token = Auth::user()->createToken('auth_token')->plainTextToken;
-        return $this->ApiResponse(200, "Login success", ["token" => $token]);
+        $token = Auth::user()->createToken('auth')->accessToken;
+        return $this->SuccessResponse(["token" => $token], 200, "Login success");
     }
 
     public function create(UserRequest $request)
@@ -47,36 +47,27 @@ class AuthController extends ApiController
             $user = User::create($validated);
 
             // Auth::login($user);
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('authToken')->accessToken;
             $user['token'] = $token;
-            return $this->ApiResponse(201, "User Registered Successfully", $user);
+            return $this->SuccessResponse($user, 201, "User Registered Successfully");
             //code...
         } catch (\Throwable $th)
         {
             if ($th->getCode() == "23000")
             {
                 // return $this->ApiResponse(400, "Email already Registered", null);
-                return $this->ApiError(400, "Duplicate email");
+                return $this->ErrorResponse(400, "Duplicate email");
             } else
             {
-                return $this->ApiError(500, "Failed registering User");
+                return $this->ErrorResponse(500, "Failed registering User " . $th->getMessage());
             }
         }
-
-
-
-
-
-
-
-
-        // return redirect('/');
     }
 
-    public function register()
-    {
-        return view('register');
+    // public function register()
+    // {
+    //     return view('register');
 
-    }
+    // }
 
 }

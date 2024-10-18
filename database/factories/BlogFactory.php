@@ -17,13 +17,13 @@ class BlogFactory extends Factory
      */
     public function definition(): array
     {
-        $imagePath = fake()->image(storage_path('app/public/images'));
-        $imageFilename = basename($imagePath);
+        // $imagePath = fake()->image(storage_path('app/public/images'));
+        // $imageFilename = basename($imagePath);
         return [
             'title' => fake()->sentence(5),
             'content' => fake()->paragraph(20),
             'user_id' => User::factory(),
-            'image' => $imageFilename
+            'image' => fake()->imageUrl()
         ];
     }
 }

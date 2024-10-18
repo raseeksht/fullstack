@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
-    protected function ApiResponse($statusCode = 200, $message = "success", $data)
+    protected function SuccessResponse($data, $statusCode = 200, $message = "success")
     {
         return response()->json([
             "success" => $statusCode < 400 ? true : false,
@@ -16,7 +16,7 @@ class ApiController extends Controller
         ], $statusCode);
     }
 
-    protected function ApiError($statusCode = 500, $message = "Something went wrong")
+    protected function ErrorResponse($statusCode = 500, $message = "Something went wrong")
     {
         $statusCode = $statusCode < 400 ? 500 : $statusCode;
         return response()->json([

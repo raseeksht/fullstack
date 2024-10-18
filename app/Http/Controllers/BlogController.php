@@ -8,6 +8,7 @@ use App\Repositories\BlogRepository;
 use App\Repositories\CommentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class BlogController extends ApiController
 {
@@ -22,16 +23,20 @@ class BlogController extends ApiController
     public function index()
     {
         $blogs = $this->blogRepository->all();
-        return $this->ApiResponse(200, "All BLogs", $blogs);
+        return $this->SuccessResponse($blogs, 200, "All BLogs");
         // return view("blog/index", ["blogs" => $blogs]);
     }
 
     public function show($id)
     {
         $blog = $this->blogRepository->find($id);
+        if (!$blog)
+        {
+            return $this->ErrorResponse(404, "Blog Not found");
+        }
         $comments = $this->commentRepository->getCommentsOnBlog($id); //here $id is blogid
         $blogWithComments = ["blog" => $blog, "comments" => $comments];
-        return $this->ApiResponse(200, "Here is your individual blog, id: $id", $blogWithComments);
+        return $this->SuccessResponse($blogWithComments, 200, "Here is your individual blog, id: $id");
         // return view("blog/show", ["blog" => $blog, "comments" => $comments]);
     }
 
@@ -44,7 +49,7 @@ class BlogController extends ApiController
     {
         if (Auth::guest())
         {
-            return $this->ApiError(403, "Not Authenticated");
+            return $this->ErrorResponse(403, "Not Authenticated");
         }
 
         if (request()->has('image'))
@@ -61,15 +66,23 @@ class BlogController extends ApiController
 
         $blog = $this->blogRepository->create($validated);
         // dd($blog);
-        return $this->ApiResponse(201, "New Blog Created", $blog);
+        return $this->SuccessResponse($blog, 201, "New Blog Created");
         // return redirect("/blogs/$blog->id")->with('newblog', "new blog created");
     }
 
     public function update(BlogRequest $request, $id)
     {
-        $blog = $this->blogRepository->update($id, $request->validated());
+        try
+        {
+            $blog = $this->blogRepository->update($id, $request->validated());
+            return $this->SuccessResponse($blog, 200, "Edit Successfully");
+
+        } catch (\Throwable $th)
+        {
+            return $this->ErrorResponse($th->getCode(), $th->getMessage());
+            // dd($th);
+        }
         // dd($blog);
-        return $this->ApiResponse(200, "Edit Successfully", $blog);
     }
 
     public function destroy($id)
@@ -77,9 +90,9 @@ class BlogController extends ApiController
         $blog = $this->blogRepository->find($id);
         if (!$blog)
         {
-            return $this->ApiError(404, "Blog Not found");
+            return $this->ErrorResponse(404, "Blog Not found");
         }
         $deleted = $this->blogRepository->delete($id);
-        return $this->ApiResponse(200, "Blog Deleted Successfully", $deleted);
+        return $this->SuccessResponse(null, 200, "Blog Deleted Successfully");
     }
 }
