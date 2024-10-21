@@ -36,7 +36,9 @@ class AuthController extends ApiController
             return $this->ErrorResponse(401, 'Invalid Email or Password');
         }
         $token = Auth::user()->createToken('auth')->accessToken;
-        return $this->SuccessResponse(["token" => $token], 200, "Login success");
+        $roles = Auth::user()->roles->pluck('name');
+        $permissions = Auth::user()->getAllPermissions()->pluck('name');
+        return $this->SuccessResponse(["token" => $token, 'roles' => $roles, 'permissions' => $permissions], 200, "Login success");
     }
 
     public function create(UserRequest $request)

@@ -47,6 +47,7 @@ class BlogController extends ApiController
 
     public function store(BlogRequest $request)
     {
+        // dd(Auth::user()->getAllPermissions()->toArray());
         if (Auth::guest())
         {
             return $this->ErrorResponse(403, "Not Authenticated");
