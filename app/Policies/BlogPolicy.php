@@ -17,12 +17,6 @@ class BlogPolicy
         return $user->id === $blog->user_id;
     }
 
-    public function edit(User $user, $id)
-    {
-        $blog = Blog::find($id);
-        return $user->id === $blog->user_id;
-    }
-
     /**
      * Determine whether the user can delete the model.
      */
