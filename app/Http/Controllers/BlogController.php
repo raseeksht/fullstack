@@ -70,11 +70,11 @@ class BlogController extends ApiController
         // return redirect("/blogs/$blog->id")->with('newblog', "new blog created");
     }
 
-    public function update(BlogRequest $request, $id)
+    public function update(BlogRequest $request, Blog $blog)
     {
         try
         {
-            $blog = $this->blogRepository->update($id, $request->validated());
+            $blog = $this->blogRepository->update($blog->id, $request->validated());
             return $this->SuccessResponse($blog, 200, "Edit Successfully");
 
         } catch (\Throwable $th)
@@ -85,14 +85,15 @@ class BlogController extends ApiController
         // dd($blog);
     }
 
-    public function destroy($id)
+    public function destroy(Blog $blog)
     {
-        $blog = $this->blogRepository->find($id);
+        // $blog = $this->blogRepository->find($id);
         if (!$blog)
         {
             return $this->ErrorResponse(404, "Blog Not found");
         }
-        $deleted = $this->blogRepository->delete($id);
-        return $this->SuccessResponse(null, 200, "Blog Deleted Successfully");
+        // $deleted = $this->blogRepository->delete($id);
+        $blog->delete();
+        return $this->SuccessResponse($blog, 200, "Blog Deleted Successfully");
     }
 }

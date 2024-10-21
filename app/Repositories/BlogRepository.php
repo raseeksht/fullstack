@@ -31,7 +31,7 @@ class BlogRepository implements BlogRepositoryInterface
         $blog = Blog::find($id);
 
         // with policy
-        $this->authorize('update', $blog);
+        // $this->authorize('update', $blog);
         // $this->authorize('edit', $id);
 
 

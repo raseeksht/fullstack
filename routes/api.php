@@ -30,11 +30,11 @@ Route::middleware("auth:api")->controller(BlogController::class)->group(function
 
     // either editor or admin or the creator himself can edit and delete
     // Route::patch("/blogs/{id}", "update")->middleware("checkRole:editor,admin");
-    Route::delete("/blogs/{id}", "destroy")->middleware("checkRole:editor,admin");
+    Route::delete("/blogs/{blog}", "destroy")->can("delete", 'blog');
 
 
     // using policy
-    Route::patch("/blogs/{id}", "update");
+    Route::patch("/blogs/{blog}", "update")->can("update", "blog");
 
 
 });
