@@ -36,7 +36,7 @@ Route::middleware("auth:api")->controller(BlogController::class)->group(function
     };
     Route::get("/blogs", "index");
     Route::get("/blogs/{id}", "show");
-    Route::post("/blogs/", "store")->middleware("checkRole:author");
+    Route::post("/blogs/", "store")->middleware("role:admin|author");
 
     // either editor or admin or the creator himself can edit and delete
     // Route::patch("/blogs/{id}", "update")->middleware("checkRole:editor,admin");

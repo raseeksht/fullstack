@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -13,8 +15,27 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['title' => 'admin']);
-        Role::create(['title' => 'author']);
-        Role::create(['title' => 'editor']);
+        $admin = Role::create(['name' => "admin"]);
+        $author = Role::create(['name' => 'author']);
+        $editor = Role::create(['name' => "editor"]);
+        $audience = Role::create(['name' => "audience"]);
+
+        $createUser = Permission::create(['name' => "createUser"]);
+        $createBlog = Permission::create(['name' => "createBlog"]);
+        $editBlog = Permission::create(['name' => "editBlog"]);
+        $comment = Permission::create(['name' => "makeComment"]);
+        $assignRoleToUser = Permission::create(['name' => "assignRole"]);
+
+        $admin->givePermissionTo($createUser);
+        $admin->givePermissionTo($assignRoleToUser);
+        $admin->givePermissionTo($createBlog);
+        $author->givePermissionTo($createBlog);
+        $editor->givePermissionTo($editBlog);
+        $audience->givePermissionTo($comment);
+
+        $adminUser = User::where("email", "admin@admin.com")->first()->assignRole(['admin']);
+        $adminUser = User::where("email", "admin@admin.com")->first()->assignRole(['author']);
+
+
     }
 }
