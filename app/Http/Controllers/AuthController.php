@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Jobs\UserCreated;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,6 +56,8 @@ class AuthController extends ApiController
 
             $user['token'] = $token;
             $user['guard'] = Auth::getDefaultDriver();
+
+            UserCreated::dispatch($validated['email']);
 
             return $this->SuccessResponse($user, 201, "User Registered Successfully");
             //code...
