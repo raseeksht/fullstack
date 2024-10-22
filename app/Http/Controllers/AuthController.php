@@ -35,6 +35,7 @@ class AuthController extends ApiController
         {
             return $this->ErrorResponse(401, 'Invalid Email or Password');
         }
+
         $token = Auth::user()->createToken('auth')->accessToken;
         $roles = Auth::user()->roles->pluck('name');
         $permissions = Auth::user()->getAllPermissions()->pluck('name');
@@ -50,7 +51,11 @@ class AuthController extends ApiController
 
             // Auth::login($user);
             $token = $user->createToken('authToken')->accessToken;
+            // dd(Auth::guard('api')->login($user));
+
             $user['token'] = $token;
+            $user['guard'] = Auth::getDefaultDriver();
+
             return $this->SuccessResponse($user, 201, "User Registered Successfully");
             //code...
         } catch (\Throwable $th)
