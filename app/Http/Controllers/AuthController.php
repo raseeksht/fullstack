@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Jobs\UserCreated;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class AuthController extends ApiController
         {
             return $this->ErrorResponse(401, 'Invalid Email or Password');
         }
+
         $token = Auth::user()->createToken('auth')->accessToken;
         $roles = Auth::user()->roles->pluck('name');
         $permissions = Auth::user()->getAllPermissions()->pluck('name');
@@ -50,7 +52,13 @@ class AuthController extends ApiController
 
             // Auth::login($user);
             $token = $user->createToken('authToken')->accessToken;
+            // dd(Auth::guard('api')->login($user));
+
             $user['token'] = $token;
+            $user['guard'] = Auth::getDefaultDriver();
+
+            UserCreated::dispatch($validated['email']);
+
             return $this->SuccessResponse($user, 201, "User Registered Successfully");
             //code...
         } catch (\Throwable $th)

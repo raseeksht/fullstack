@@ -36,7 +36,9 @@ Route::middleware("auth:api")->controller(BlogController::class)->group(function
     };
     Route::get("/blogs", "index");
     Route::get("/blogs/{id}", "show");
-    Route::post("/blogs/", "store")->middleware("role:admin|author");
+    // Route::post("/blogs/", "store")->middleware("role:admin"); //with roles
+    Route::post("/blogs/", "store")->middleware("checkPermission:createBlog"); //with permission
+    // Route::post("/blogs/", "store")->middleware("role_or_permission:dance"); //with role or permission
 
     // either editor or admin or the creator himself can edit and delete
     // Route::patch("/blogs/{id}", "update")->middleware("checkRole:editor,admin");
@@ -50,7 +52,7 @@ Route::middleware("auth:api")->controller(BlogController::class)->group(function
 });
 
 
-Route::middleware(["auth:api", "checkRole:admin"])->resource("roles", RoleController::class);
+// Route::middleware(["auth:api", "checkRole:admin"])->resource("roles", RoleController::class);
 
 // Route::middleware("auth:api")->controller(RoleController::class)->group(function () {
 
