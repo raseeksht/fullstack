@@ -24,7 +24,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'create');
     Route::get("/logout", "logout")->middleware("auth:api");
 });
-auth()->loginUsingId(11);
+
+Route::post('password/email', [AuthController::class, 'sendResetLinkEmail']);
+Route::post('password/reset', [AuthController::class, 'reset']);
 
 Route::middleware("auth:api")->controller(BlogController::class)->group(function () {
     $missingBlogResponse = function () {
