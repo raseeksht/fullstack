@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Mail\UserRegistered;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Mail;
 
 class UserCreated implements ShouldQueue
 {
@@ -12,7 +14,7 @@ class UserCreated implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public $data)
+    public function __construct(public $user)
     {
     }
 
@@ -21,6 +23,8 @@ class UserCreated implements ShouldQueue
      */
     public function handle(): void
     {
-        logger("A new User is created" . $this->data);
+        Mail::to($this->user->email)->send(
+            new UserRegistered($this->user)
+        );
     }
 }
