@@ -31,9 +31,7 @@ class CommentRequest extends BaseRequest
         } elseif ($this->isMethod('delete'))
         {
             // dd(request()->all());
-            return [
-                'blog_id' => ['required', 'int'],
-            ];
+            return [];
         } elseif ($this->isMethod('patch'))
         {
             return [

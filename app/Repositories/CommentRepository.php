@@ -16,6 +16,7 @@ class CommentRepository implements CommentRepositoryInterface
         $comments = Comment::where('blog_id', $blogId)
             ->where('parent', $parent)  // Use $parent to get replies
             ->latest()
+            ->with('user')
             ->get();
 
         foreach ($comments as $comment)

@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\CommentRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CommentController extends Controller
+class CommentController extends ApiController
 {
     private $commentRepository;
     public function __construct(CommentRepository $commentRepository)
@@ -43,12 +43,9 @@ class CommentController extends Controller
         $validated['user_id'] = Auth()->user()->id;
         $validated['blog_id'] = (int) $validated['blog_id'];
 
-        // dd($validated);
-
         $newcomment = $this->commentRepository->addComment($validated);
 
-        // dd($newcomment);
-        return redirect("/blogs/" . $validated['blog_id']);
+        return $this->SuccessResponse(null, 201, "Comment Added");
 
 
     }
@@ -60,7 +57,7 @@ class CommentController extends Controller
     {
         $comments = $this->commentRepository->getCommentsOnBlog($blogId);
 
-        return $comments;
+        return $this->SuccessResponse($comments, 200, "Take this. comments");
     }
 
     /**
@@ -77,9 +74,10 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, $id)
     {
-        $this->commentRepository->updateComment($id, $request->validated("commentContent"));
+        $updated = $this->commentRepository->updateComment($id, $request->validated("commentContent"));
         // dd($request->validated());
-        return redirect("/blogs/" . $request->validated('blog_id'));
+        return $this->SuccessResponse($updated, 200, "Comment Edited");
+
 
     }
 
@@ -90,7 +88,7 @@ class CommentController extends Controller
     {
         $validated = $request->validated();
         $comment = $this->commentRepository->deleteComment($id);
-        // dd($comment);
-        return redirect("/blogs/" . $validated['blog_id']);
+
+        return $this->SuccessResponse($comment, 200, "Comment Deleted");
     }
 }
