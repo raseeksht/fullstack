@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Middleware\CheckRole;
+use App\Mail\ContactMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +19,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/test', function (Request $request) {
     return "hello";
-});
+})->middleware(['auth:api', "role:admin"]);
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'authenticate');
@@ -54,12 +56,27 @@ Route::middleware("auth:api")->controller(BlogController::class)->group(function
 });
 
 
-// Route::middleware(["auth:api", "checkRole:admin"])->resource("roles", RoleController::class);
+Route::middleware(["auth:api"])->resource("comments", CommentController::class);
 
 // Route::middleware("auth:api")->controller(RoleController::class)->group(function () {
 
 //     Route::get("/roles", "index");
 // });
+
+Route::post("/sendmail", function (Request $request) {
+    $validated = $request->validate([
+        "name" => "required|min:5",
+        "email" => "required",
+        "subject" => "required|min:5",
+        "message" => "required|min:20"
+    ]);
+    logger('from /sendmail');
+    Mail::to("admin@admin.com")->queue(
+        new ContactMail(($validated))
+        // new PasswordResetEmail(['token' => $token, 'email' => $request->email])
+    );
+    return response()->json(["message" => "Email Sent Successfully"], 200);
+});
 
 Route::get("/users/{user}", function (User $user) {
     return response()->json(["user" => $user], 200);

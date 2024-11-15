@@ -46,7 +46,7 @@ class AuthController extends ApiController
         $token = Auth::user()->createToken('auth')->accessToken;
         $roles = Auth::user()->roles->pluck('name');
         $permissions = Auth::user()->getAllPermissions()->pluck('name');
-        return $this->SuccessResponse(["token" => $token, 'roles' => $roles, 'permissions' => $permissions], 200, "Login success");
+        return $this->SuccessResponse(["token" => $token, 'roles' => $roles, 'permissions' => $permissions, 'user' => Auth::user()], 200, "Login success");
     }
 
     public function create(UserRequest $request)
